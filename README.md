@@ -8,7 +8,8 @@ BenQ Zowie EC-CW wireless mouse (tested with EC1-CW and its charging dock receiv
 
 ## How it works
 
-- `zowie_daemon.py` runs as a systemd user service, opens the mouse's vendor hidraw interface
+- On load the widget starts `contents/code/zowie_daemon.py` as a transient systemd user unit
+  (`zowie-daemon`). The daemon opens the mouse's vendor hidraw interface
   (`04a5:8006` receiver or `04a5:8005` cable) and sends `a5 03` every 30 s.
   The reply is `LL HH PP ec`: battery millivolts (little-endian) and the mouse's own percent.
 - The percent shown is estimated from millivolts with a generic LiPo curve and smoothing;
@@ -20,13 +21,15 @@ DPI is not exposed over the receiver, so the widget does not show it.
 
 ## Install
 
+Install "Zowie Mouse" from the KDE Store (Add Widgets → Get New Widgets), or from a clone:
+
 ```sh
 ./install.sh
 ```
 
-It installs a udev rule (needs sudo) that gives the logged-in user access to the mouse hidraw
-nodes, enables the user service, installs the icons and the plasmoid. Then add the
-"Zowie Mouse" widget to a panel. Requires Python 3.10+ and Plasma 6.
+Add the widget to a panel. On first use its popup shows "Grant access": it installs a udev rule
+(`contents/code/70-zowie.rules`, asks for your password via polkit) that gives the logged-in user
+access to the mouse hidraw nodes. Requires Python 3.10+ and Plasma 6.
 
 ## Tests
 

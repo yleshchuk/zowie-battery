@@ -85,7 +85,7 @@ def serve(mode: str, mouse_path: str, vendor_path: str, status: dict[str, object
     mouse = os.open(mouse_path, os.O_RDONLY)
     vendor = os.open(vendor_path, os.O_RDWR)
     try:
-        status.update(mode=mode)
+        status.update(mode=mode, access=True)
         publish(status)
         next_query = 0.0
         last_report: float | None = None
@@ -140,6 +140,9 @@ def main() -> None:
         else:
             try:
                 serve(*interfaces, status)
+            except PermissionError:
+                status.update(mode=None, linked=False, access=False)
+                publish(status)
             except OSError as error:
                 print(f"{interfaces}: {error}", file=sys.stderr, flush=True)
                 status.update(mode=None, linked=False)

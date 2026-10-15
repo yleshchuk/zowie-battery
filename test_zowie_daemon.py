@@ -1,4 +1,8 @@
+import sys
 import unittest
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent / "plasmoid" / "contents" / "code"))
 
 from zowie_daemon import estimate_percent, estimate_rate, parse_battery
 

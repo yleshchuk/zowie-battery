@@ -52,9 +52,13 @@ KCM.SimpleKCM {
 
                 QQC2.ToolButton {
                     required property string modelData
-                    icon.name: modelData
-                    icon.width: Kirigami.Units.iconSizes.medium
-                    icon.height: Kirigami.Units.iconSizes.medium
+                    contentItem: Kirigami.Icon {
+                        implicitWidth: Kirigami.Units.iconSizes.medium
+                        implicitHeight: Kirigami.Units.iconSizes.medium
+                        source: modelData.startsWith("zowie-") ? Qt.resolvedUrl("../icons/" + modelData + ".svg") : modelData
+                        isMask: modelData.startsWith("zowie-")
+                        color: Kirigami.Theme.textColor
+                    }
                     checkable: true
                     checked: page.cfg_iconName === modelData
                     onClicked: page.cfg_iconName = modelData

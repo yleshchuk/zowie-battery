@@ -13,7 +13,9 @@ PlasmoidItem {
     readonly property int percent: linked ? (status.battery_estimate ?? status.battery_percent) : 0
     readonly property string percentText: linked ? percent + "%" : "—"
     readonly property string rateText: status.polling_hz ? status.polling_hz + " " + tr("Hz") : tr("— (move the mouse)")
-    readonly property string modeText: !status.mode ? tr("not connected")
+    readonly property string codeDir: Qt.resolvedUrl("../code").toString().replace("file://", "")
+    readonly property string modeText: status.access === false ? tr("no access to the mouse")
+        : !status.mode ? tr("not connected")
         : !linked ? tr("mouse is not linked")
         : status.mode === "wired" ? tr("cable") : tr("receiver")
     readonly property color levelColor: !linked ? Kirigami.Theme.disabledTextColor
@@ -26,12 +28,20 @@ PlasmoidItem {
         return trans.tr(text)
     }
 
+    function iconSource(name) {
+        return name.startsWith("zowie-") ? Qt.resolvedUrl("../icons/" + name + ".svg").toString() : name
+    }
+
+    function grantAccess() {
+        launcher.connectSource(`pkexec /bin/sh -c "install -m 644 '${codeDir}/70-zowie.rules' /etc/udev/rules.d/ && udevadm control --reload && udevadm trigger --subsystem-match=hidraw"`)
+    }
+
     Translations {
         id: trans
         currentLanguage: Plasmoid.configuration.language
     }
 
-    Plasmoid.icon: Plasmoid.configuration.iconName
+    Plasmoid.icon: iconSource(Plasmoid.configuration.iconName)
     toolTipMainText: "Zowie EC-CW"
     toolTipSubText: tr("Battery") + ": " + percentText + "\n" + tr("Polling rate") + ": " + rateText + "\n" + tr("Connection") + ": " + modeText
 
@@ -48,6 +58,17 @@ PlasmoidItem {
             }
         }
     }
+
+    Plasma5Support.DataSource {
+        id: launcher
+        engine: "executable"
+        onNewData: function(sourceName) {
+            disconnectSource(sourceName)
+        }
+    }
+
+    // ponytail: a running daemon keeps old code after a widget update until logout.
+    Component.onCompleted: launcher.connectSource(`systemd-run --user --unit=zowie-daemon --collect -p Restart=on-failure /usr/bin/python3 -I '${codeDir}/zowie_daemon.py'`)
 
     Timer {
         interval: 5000
@@ -83,7 +104,9 @@ PlasmoidItem {
                 Kirigami.Icon {
                     width: compact.indicator === "ring" ? compact.size * 0.6 : compact.size
                     height: width
-                    source: Plasmoid.configuration.iconName
+                    source: root.iconSource(Plasmoid.configuration.iconName)
+                    isMask: Plasmoid.configuration.iconName.startsWith("zowie-")
+                    color: Kirigami.Theme.textColor
                 }
             }
 
@@ -165,7 +188,9 @@ PlasmoidItem {
                     Layout.alignment: Qt.AlignHCenter
                     implicitWidth: Kirigami.Units.iconSizes.smallMedium
                     implicitHeight: implicitWidth
-                    source: Plasmoid.configuration.iconName
+                    source: root.iconSource(Plasmoid.configuration.iconName)
+                    isMask: Plasmoid.configuration.iconName.startsWith("zowie-")
+                    color: Kirigami.Theme.textColor
                 }
                 PlasmaComponents.Label {
                     Layout.alignment: Qt.AlignHCenter
@@ -193,9 +218,15 @@ PlasmoidItem {
                 text: root.tr("Connection") + ": " + root.modeText
             }
             PlasmaComponents.Label {
-                visible: root.status.battery_updated !== undefined
+                visible: root.status.battery_updated !== undefined && root.status.access !== false
                 opacity: 0.6
                 text: root.tr("Updated") + ": " + new Date(root.status.battery_updated * 1000).toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+            }
+            PlasmaComponents.Button {
+                visible: root.status.access === false
+                icon.name: "security-high"
+                text: root.tr("Grant access")
+                onClicked: root.grantAccess()
             }
         }
     }

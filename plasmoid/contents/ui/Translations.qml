@@ -18,6 +18,8 @@ QtObject {
         "cable": "кабель",
         "not connected": "не підключено",
         "mouse is not linked": "мишка не на зв'язку",
+        "no access to the mouse": "немає доступу до мишки",
+        "Grant access": "Надати доступ",
         "— (move the mouse)": "— (поводь мишкою)",
         "Language:": "Мова:",
         "System": "Системна",
@@ -25,7 +27,8 @@ QtObject {
         "Ring": "Кільце",
         "Vertical bar": "Вертикальна смужка",
         "Horizontal bar": "Горизонтальна батарейка",
-        "Text": "Текст",        "Show percentage": "Показувати відсотки",
+        "Text": "Текст",
+        "Show percentage": "Показувати відсотки",
         "Icon:": "Іконка:",
         "Choose…": "Вибрати…"
     })
