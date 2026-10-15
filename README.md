@@ -21,7 +21,7 @@ DPI is not exposed over the receiver, so the widget does not show it.
 
 ## Install
 
-Install "Zowie Mouse" from the KDE Store (Add Widgets → Get New Widgets), or from a clone:
+Install "Zowie Mouse Battery" from the KDE Store (Add Widgets → Get New Widgets), or from a clone:
 
 ```sh
 ./install.sh

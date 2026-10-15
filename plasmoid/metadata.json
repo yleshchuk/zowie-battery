@@ -12,7 +12,7 @@
         "Icon": "input-mouse",
         "Id": "org.yleshchuk.zowiebattery",
         "License": "GPL-3.0-or-later",
-        "Name": "Zowie Mouse",
+        "Name": "Zowie Mouse Battery",
         "Version": "1.0"
     },
     "X-Plasma-API-Minimum-Version": "6.0"
