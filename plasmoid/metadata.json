@@ -1,0 +1,19 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "yleshchuk"
+            }
+        ],
+        "Category": "System Information",
+        "Description": "Zowie EC-CW mouse battery and polling rate.",
+        "EnabledByDefault": true,
+        "Icon": "input-mouse",
+        "Id": "org.yleshchuk.zowiebattery",
+        "License": "GPL-3.0-or-later",
+        "Name": "Zowie Mouse",
+        "Version": "1.0"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}
